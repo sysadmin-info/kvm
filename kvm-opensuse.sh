@@ -70,5 +70,5 @@ type="--virt-type qemu"
 echo "Create a disk for a virtual machine"
 qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/images/$name.qcow2 10G
 
-echo "Install Debian 11 as a virtual machine:"
+echo "Install a virtual machine:"
 virt-install --name=$name $ram $cpu $os $acc $disk $network $graphics $console $location $extra $type
