@@ -47,11 +47,6 @@ systemctl enable libvirtd.service
 systemctl is-enabled libvirtd.service
 systemctl status libvirtd.service
 
-cd /var/lib/libvirt/images/
-qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/images/debian11.qcow2 10G
-
-# preallocation=metadata - See the explanation: https://www.jamescoyle.net/how-to/1810-qcow2-disk-images-and-performance 
-
 cd /root
 mkdir iso
 cd iso
@@ -70,6 +65,10 @@ console="--console pty,target_type=serial"
 location="--location=/root/iso/debian-11.5.0-amd64-netinst.iso"
 extra="--extra-args 'console=ttyS0,115200n8 serial'"
 type="--virt-type qemu"
+
+# preallocation=metadata - See the explanation: https://www.jamescoyle.net/how-to/1810-qcow2-disk-images-and-performance 
+echo "Create a disk for a virtual machine"
+qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/images/$name.qcow2 10G
 
 echo "Install Debian 11 as a virtual machine:"
 virt-install --name=$name $ram $cpu $os $acc $disk $network $graphics $console $location $extra $type
