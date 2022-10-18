@@ -47,23 +47,23 @@ systemctl enable libvirtd.service
 systemctl is-enabled libvirtd.service
 systemctl status libvirtd.service
 
-cd /root
+cd /
 mkdir iso
+chown -R qemu:qemu iso
 cd iso
 wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-11.5.0-amd64-netinst.iso
 
-#Define variablesfor the virtual machine installation
-name="debian"
+#Define variables for the virtual machine installation
+name="home-as"
 ram="--ram=4096"
 cpu="--vcpus=2"
 os="--os-variant=debian11"
 acc="--accelerate"
-disk="--disk /var/lib/libvirt/images/debian11.qcow2,device=disk,size=10,sparse=yes,cache=none,format=qcow2,bus=virtio"
+disk="--disk /var/lib/libvirt/images/$name.qcow2,device=disk,size=10,sparse=yes,cache=none,format=qcow2,bus=virtio"
 network="--network type=direct,source=br-ex,model=virtio"
 graphics="--graphics none"
 console="--console pty,target_type=serial"
-location="--location=/root/iso/debian-11.5.0-amd64-netinst.iso"
-extra="--extra-args 'console=ttyS0,115200n8 serial'"
+location="--location=/iso/debian-11.5.0-amd64-netinst.iso"
 type="--virt-type qemu"
 
 # preallocation=metadata - See the explanation: https://www.jamescoyle.net/how-to/1810-qcow2-disk-images-and-performance 
@@ -71,4 +71,4 @@ echo "Create a disk for a virtual machine"
 qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/images/$name.qcow2 10G
 
 echo "Install a virtual machine:"
-virt-install --name=$name $ram $cpu $os $acc $disk $network $graphics $console $location $extra $type
+virt-install --name=$name $ram $cpu $os $acc $disk $network $graphics $console $location $type --extra-args 'console=ttyS0,115200n8 serial'
