@@ -64,11 +64,11 @@ network="--network type=direct,source=br-ex,model=virtio"
 graphics="--graphics none"
 console="--console pty,target_type=serial"
 location="--location=/iso/debian-11.5.0-amd64-netinst.iso"
-type="--virt-type qemu"
+machine_type="--virt-type qemu"
 
 # preallocation=metadata - See the explanation: https://www.jamescoyle.net/how-to/1810-qcow2-disk-images-and-performance 
 echo "Create a disk for a virtual machine"
 qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/images/$name.qcow2 10G
 
 echo "Install a virtual machine:"
-virt-install --name=$name $ram $cpu $os $acc $disk $network $graphics $console $location $type --extra-args 'console=ttyS0,115200n8 serial'
+virt-install --name=$name $ram $cpu $os $acc $disk $network $graphics $console $location $machine_type --extra-args 'console=ttyS0,115200n8 serial'
