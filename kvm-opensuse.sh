@@ -70,7 +70,7 @@ echo "Strong_password" > password
 chmod 0600 password
 
 echo "Create a disk for a virtual machine"
-virt-builder opensuse-13.2  --format qcow2 --size 20G -o /var/lib/libvirt/images/opensuse-13.2.qcow2 --root-password file:/home/username/password
+virt-builder opensuse-13.2  --format qcow2 --size 20G -o /var/lib/libvirt/images/$name.qcow2 --root-password file:/home/username/password
 
 echo "Install a virtual machine:"
 virt-install --name=$name $ram $disk $cpu $os $network $graphics $serial $console $boot $import 
