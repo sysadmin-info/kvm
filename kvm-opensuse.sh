@@ -47,29 +47,27 @@ systemctl enable libvirtd.service
 systemctl is-enabled libvirtd.service
 systemctl status libvirtd.service
 
-cd /
-mkdir iso
-chown -R qemu:qemu iso
-cd iso
-wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-11.5.0-amd64-netinst.iso
-
 #Define variables for the virtual machine installation
-name="home-assistant"
-ram="--ram=4096"
+name="opensuse-13.2"
+ram="--ram=2048"
+disk="--disk path=/var/lib/libvirt/images/$name.qcow2"
 cpu="--vcpus=2"
-os="--os-variant=debian11"
-acc="--accelerate"
-disk="--disk /var/lib/libvirt/images/$name.qcow2,device=disk,size=10,sparse=yes,cache=none,format=qcow2,bus=virtio"
+os="--os-variant=opensuse13.2"
 network="--network=bridge:br-ex,model=virtio,virtualport_type=openvswitch"
 graphics="--graphics none"
-console="--console pty,target_type=serial"
-location="--location=/iso/debian-11.5.0-amd64-netinst.iso"
-machine_type="--virt-type qemu"
+serial="--serial pty"
+console="--console pty"
+boot="--boot hd"
+import="--import"
 
-# preallocation=metadata - See the explanation: https://www.jamescoyle.net/how-to/1810-qcow2-disk-images-and-performance 
-echo "Create a disk for a virtual machine. Use one of two methods:"
-#qemu-img create -o preallocation=metadata -f qcow2 /var/lib/libvirt/images/$name.qcow2 10G
-virt-builder debian-11 --format qcow2 --size 10G -o /var/lib/libvirt/images/debian-11.qcow2
+echo "Create a file that contains a root password"
+cd /home/username
+touch password
+echo "Strong_password" > password
+chmod 0600 password
+
+echo "Create a disk for a virtual machine"
+virt-builder opensuse-13.2  --format qcow2 --size 20G -o /var/lib/libvirt/images/opensuse-13.2.qcow2 --root-password file:/home/username/password
 
 echo "Install a virtual machine:"
-virt-install --name=$name $ram $cpu $os $acc $disk $network $graphics $console $location $machine_type --extra-args 'console=ttyS0,115200n8 serial'
+virt-install --name=$name $ram $disk $cpu $os $network $graphics $serial $console $boot $import
