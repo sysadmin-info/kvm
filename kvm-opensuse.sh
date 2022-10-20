@@ -59,6 +59,9 @@ serial="--serial pty"
 console="--console pty"
 boot="--boot hd"
 import="--import"
+# Uncomment one of the below and modify if you need to install it from iso or directly from the network location and add $location after $import in the last command.
+#location="--location=/iso/debian-11.5.0-amd64-netinst.iso"
+#location="--location 'http://ftp.nl.debian.org/debian/dists/bullseye/main/installer-amd64/'"
 
 echo "Create a file that contains a root password"
 cd /home/username
@@ -70,4 +73,4 @@ echo "Create a disk for a virtual machine"
 virt-builder opensuse-13.2  --format qcow2 --size 20G -o /var/lib/libvirt/images/opensuse-13.2.qcow2 --root-password file:/home/username/password
 
 echo "Install a virtual machine:"
-virt-install --name=$name $ram $disk $cpu $os $network $graphics $serial $console $boot $import
+virt-install --name=$name $ram $disk $cpu $os $network $graphics $serial $console $boot $import 
